@@ -48,13 +48,13 @@ const SquareScreen = () => {
 	return (
 		<View>
 			<Button 
-				title="Aumentar em 5"
-				onPress={() => increaseColorChangeValue(50)}
+				title="Aumentar em 10"
+				onPress={() => increaseColorChangeValue(10)}
 			/>
 			<Text>{colorChangeValue}</Text>
 			<Button 
-				title="Diminuir em 5"
-				onPress={() => decreaseColorChangeValue(50)} 
+				title="Diminuir em 10"
+				onPress={() => decreaseColorChangeValue(10)} 
 			/>
 
 			<ColorCounter 
