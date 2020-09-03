@@ -1,76 +1,58 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import { View, StyleSheet, Button, Text  } from 'react-native';
 import ColorCounter from '../components/ColorCounter';
 
+const COLOR_INCREMENT = 15;
+
+const reducer = (state, action) => {
+
+	switch (action.type) {
+		case 'change_red':
+			return state.red + action.payload > 255
+				|| state.red + action.payload < 0
+					? state
+					: { ...state, red: state.red + action.payload };
+
+		case 'change_green':
+			return state.green + action.payload > 255
+				|| state.green + action.payload < 0
+					? state
+					: { ...state, green: state.green + action.payload };
+
+		case 'change_blue':
+			return state.blue + action.payload > 255
+				|| state.blue + action.payload < 0
+					? state
+					: { ...state, blue: state.blue + action.payload };
+
+		default:
+			return state;
+	}
+
+};
 
 const SquareScreen = () => {
-	const [red, setRed] = useState(0);
-	const [green, setGreen] = useState(0);
-	const [blue, setBlue] = useState(0);
-	const [colorChangeValue, setColorChangeValue] = useState(15);
 
-	const setColor = (color, change) => {
-		// color === 'red', 'green', 'blue'
-		// change === colorChangeValue 
+	const [state, dispatch] = useReducer(reducer, { red: 0, green: 0, blue: 0 });
 
-		switch (color) {
-			case 'red':
-				if (red + change < 0) setRed(0);
-				else if(red + change > 255) setRed(255);
-				else setRed(red + change);
-			break;
-
-			case 'blue':
-				if (blue + change < 0) setBlue(0);
-				else if(blue + change > 255) setBlue(255);
-				else setBlue(blue + change);
-			break;
-
-			case 'green':
-				if (green + change < 0) setGreen(0);
-				else if(green + change > 255) setGreen(255);
-				else setGreen(green + change);
-			break;
-
-		}
-	};
-
-	const increaseColorChangeValue = (increase) => {
-		if (colorChangeValue + increase > 255) setColorChangeValue(255);
-		else setColorChangeValue(colorChangeValue + increase);
-	};
-
-	const decreaseColorChangeValue = (decrease) => {
-		if (colorChangeValue - decrease < 0) setColorChangeValue(0);
-		else setColorChangeValue(colorChangeValue - decrease);
-	};
+	const { red, green, blue } = state;
 
 	return (
 		<View>
-			<Button 
-				title="Aumentar em 10"
-				onPress={() => increaseColorChangeValue(10)}
-			/>
-			<Text>{colorChangeValue}</Text>
-			<Button 
-				title="Diminuir em 10"
-				onPress={() => decreaseColorChangeValue(10)} 
-			/>
-
 			<ColorCounter 
 				color="Red" 
-				onIncrease={() => setColor('red', colorChangeValue)}
-				onDecrease={() => setColor('red', -colorChangeValue)}
-			/>
-			<ColorCounter 
-				color="Blue" 
-				onIncrease={() => setColor('blue', colorChangeValue)}
-				onDecrease={() => setColor('blue', -colorChangeValue)}
+				onIncrease={() => dispatch({ type: 'change_red', payload: COLOR_INCREMENT })}
+				onDecrease={() => dispatch({ type: 'change_red', payload: -COLOR_INCREMENT })}
 			/>
 			<ColorCounter 
 				color="Green" 
-				onIncrease={() => setColor('green', colorChangeValue)}
-				onDecrease={() => setColor('green', -colorChangeValue)}
+				onIncrease={() => dispatch({ type: 'change_green', payload: COLOR_INCREMENT })}
+				onDecrease={() => dispatch({ type: 'change_green', payload: -COLOR_INCREMENT })}
+			/>
+			<ColorCounter 
+				color="Blue" 
+				onIncrease={() => dispatch({ type: 'change_blue', payload: COLOR_INCREMENT })}
+				onDecrease={() => dispatch({ type: 'change_blue', payload: -COLOR_INCREMENT })}
 			/>
 			<View style={{ height: 150, width: 150, backgroundColor: `rgb(${red}, ${green}, ${blue})` }} />
 			<Text> { `rgb(${red}, ${blue}, ${green})` } </Text>
